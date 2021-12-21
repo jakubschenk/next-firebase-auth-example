@@ -5,6 +5,7 @@ import absoluteUrl from "next-absolute-url";
 const TWELVE_DAYS_IN_MS = 12 * 60 * 60 * 24 * 1000;
 
 const initAuth = () => {
+  console.log(process.env.FIREBASE_PRIVATE_KEY);
   init({
     debug: true,
 
@@ -19,7 +20,7 @@ const initAuth = () => {
       const destPath =
         typeof window === "undefined" ? ctx.resolvedUrl : window.location.href;
       const destURL = new URL(destPath, origin);
-      return `login?destination=${encodeURIComponent(destURL.toString())}`;
+      return `/?destination=${encodeURIComponent(destURL.toString())}`;
     },
 
     // This demonstrates setting a dynamic destination URL when
@@ -43,7 +44,11 @@ const initAuth = () => {
       if (destinationParamVal) {
         // Verify the redirect URL host is allowed.
         // https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/11-Client_Side_Testing/04-Testing_for_Client_Side_URL_Redirect
-        const allowedHosts = ["localhost:3000", "codesnippet.dev"];
+        const allowedHosts = [
+          "localhost:3000",
+          "test-next-firebase-auth-5c7ab.firebaseapp.com",
+          "test-next-firebase-auth-5c7ab.web.app",
+        ];
         const allowed =
           allowedHosts.indexOf(new URL(destinationParamVal).host) > -1;
         if (allowed) {
@@ -68,9 +73,7 @@ const initAuth = () => {
         // Using JSON to handle newline problems when storing the
         // key as a secret in Vercel. See:
         // https://github.com/vercel/vercel/issues/749#issuecomment-707515089
-        privateKey: process.env.FIREBASE_PRIVATE_KEY
-          ? JSON.parse(process.env.FIREBASE_PRIVATE_KEY)
-          : undefined,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY as string,
       },
       databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL as string,
     },
@@ -81,7 +84,7 @@ const initAuth = () => {
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
     },
     cookies: {
-      name: "ExampleApp",
+      name: "next-firebase-auth-example",
       keys: [
         process.env.COOKIE_SECRET_CURRENT,
         process.env.COOKIE_SECRET_PREVIOUS,
