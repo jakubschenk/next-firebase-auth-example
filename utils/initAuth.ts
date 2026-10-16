@@ -5,7 +5,6 @@ import absoluteUrl from "next-absolute-url";
 const TWELVE_DAYS_IN_MS = 12 * 60 * 60 * 24 * 1000;
 
 const initAuth = () => {
-  console.log(process.env.FIREBASE_PRIVATE_KEY);
   init({
     debug: true,
 
